@@ -1,0 +1,31 @@
+@import '../variables';
+
+.auth {
+    display: flex;
+    //flex-direction: column;
+    justify-content: space-between;
+    
+    color: #fff;
+    text-transform: uppercase;
+    font-weight:bold;
+    gap: 10px;
+    margin-left: 10px;
+    
+    
+    &__login {
+        
+    }
+    &__register{
+
+    }
+
+    @media (max-width:$breakpoint-tablet){
+        margin-top: 10px;
+        margin-left: 0;
+    }
+
+    .button{
+        padding: 5px 10px;
+        display: block;
+    }
+}

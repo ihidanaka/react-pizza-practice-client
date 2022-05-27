@@ -1,12 +1,12 @@
 @import '../variables';
 
 .pizza-block {
-  width: 280px;
+  width: 220px;
   text-align: center;
-  margin:0 65px 65px 65px;
+  margin: 0 auto 65px auto;
 
   &__image {
-    width: 260px;
+    width: 220px;
   }
 
   &__title {
