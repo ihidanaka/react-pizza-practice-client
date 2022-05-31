@@ -8,7 +8,7 @@ const Home = () => {
   const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
-    fetch("/api/items")
+    fetch("http://5.187.0.127:4000/api/items")
       .then((res) => {
         if (!res.ok) {
           throw new Error(res.statusText);
