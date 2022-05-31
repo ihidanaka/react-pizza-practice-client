@@ -6,9 +6,10 @@ import Skeleton from "../components/PizzaBlock/Skeleton";
 const Home = () => {
   const [items, setItems] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
-
+  const [activeCategoryId,setActiveCategoryId] = React.useState(0);
+  const [sortType, setSortType] = React.useState(0);
   React.useEffect(() => {
-    fetch("http://5.187.0.127:4000/api/items")
+    fetch("http://5.187.0.127:4000/api/items?category=" + activeCategoryId)
       .then((res) => {
         if (!res.ok) {
           throw new Error(res.statusText);
@@ -19,13 +20,14 @@ const Home = () => {
         setItems(arr);
         setIsLoading(false);
       });
-  }, []);
+      window.scrollTo(0,0);
+  }, [activeCategoryId]);
   return (
     <div className="container">
       <div className="content__top">
-        <Categories />
+        <Categories value = {activeCategoryId} onClickCategory = {(i) => setActiveCategoryId(i) }/>
       </div>
-      <Sort />
+      <Sort value = {sortType} onSetSortType = {(i) => setSortType(i)}/>
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">
         {isLoading

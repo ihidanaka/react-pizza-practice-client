@@ -1,12 +1,12 @@
 import React from 'react';
-function Sort() {
+function Sort({value, onSetSortType}) {
   const [open, setOpen] = React.useState(false);
-  const [selected, setSelected] = React.useState(0);
+  
   
   const list = ['популярности','цене','алфавиту']
-  const sortName = list[selected]
+  const sortName = list[value]
   const onChangeSortMethod = (i) =>{
-    setSelected(i);
+    onSetSortType(i);
     setOpen(false);
   }
   return (
@@ -34,7 +34,7 @@ function Sort() {
             <li 
             key={sortType} 
             onClick={() => onChangeSortMethod(i)} 
-            className = {selected === i ? 'active' : ''}>{sortType}
+            className = {value === i ? 'active' : ''}>{sortType}
             
             </li>)
           }
