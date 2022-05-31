@@ -1,14 +1,14 @@
-import React from 'react';
-import Sort from '../components/Sort';
-import Categories from '../components/Categories';
-import PizzaBlock from '../components/PizzaBlock';
-import Skeleton from '../components/PizzaBlock/Skeleton';
- const Home = () => {
+import React from "react";
+import Sort from "../components/Sort";
+import Categories from "../components/Categories";
+import PizzaBlock from "../components/PizzaBlock";
+import Skeleton from "../components/PizzaBlock/Skeleton";
+const Home = () => {
   const [items, setItems] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
-    fetch('/api/items')
+    fetch("/api/items")
       .then((res) => {
         if (!res.ok) {
           throw new Error(res.statusText);
@@ -21,7 +21,7 @@ import Skeleton from '../components/PizzaBlock/Skeleton';
       });
   }, []);
   return (
-    <>
+    <div className="container">
       <div className="content__top">
         <Categories />
       </div>
@@ -32,7 +32,7 @@ import Skeleton from '../components/PizzaBlock/Skeleton';
           ? [...new Array(6)].map((_, i) => <Skeleton key={i} />)
           : items.map((obj) => <PizzaBlock key={obj.id} {...obj} />)}
       </div>
-    </>
+    </div>
   );
 };
 export default Home;
