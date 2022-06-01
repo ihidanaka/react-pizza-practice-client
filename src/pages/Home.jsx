@@ -9,9 +9,17 @@ const Home = () => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [activeCategoryId, setActiveCategoryId] = React.useState(0);
   const [sortType, setSortType] = React.useState(0);
-
+  const categoriesTitles = [
+    'Все',
+    'Мясные',
+    'Вегетарианская',
+    'Гриль',
+    'Острые',
+    'Закрытые'
+  ];
   React.useEffect(() => {
-    fetch("http://5.187.0.127:4000/api/settings/categories")
+    setIsLoading(true);
+    fetch("http://5.187.0.127:4000/api/settings")
       .then((res) => {
         if (!res.ok) {
           throw new Error(res.statusText);
@@ -39,12 +47,12 @@ const Home = () => {
     <div className="container">
       <div className="content__top">
         <Categories
-          value={activeCategoryId}
+          value={{id:activeCategoryId, categoriesTitle:categoriesTitles}}
           onClickCategory={(i) => setActiveCategoryId(i)}
         />
       </div>
       <Sort value={sortType} onSetSortType={(i) => setSortType(i)} />
-      <h2 className="content__title">Все пиццы</h2>
+      <h2 className="content__title">{categoriesTitles[activeCategoryId]}</h2>
       <div className="content__items">
         {isLoading
           ? [...new Array(6)].map((_, i) => <Skeleton key={i} />)
