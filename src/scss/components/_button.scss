@@ -134,10 +134,11 @@
   &--cart {
     display: flex;
     align-items: center;
+    justify-content: center;
     line-height: 23px;
     padding: 12px 25px;
-
-    svg {
+    
+      svg {
       margin-right: 8px;
       margin-bottom: 1px;
     }
@@ -146,5 +147,7 @@
       font-weight: 600;
       font-size: 16px;
     }
+    
+    
   }
 }

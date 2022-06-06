@@ -2,8 +2,8 @@
 
 .auth {
     display: flex;
-    //flex-direction: column;
-    justify-content: space-between;
+
+    justify-content: end;
     
     color: #fff;
     text-transform: uppercase;
@@ -19,13 +19,17 @@
 
     }
 
-    @media (max-width:$breakpoint-tablet){
-        margin-top: 10px;
-        margin-left: 0;
-    }
+    
 
     .button{
         padding: 5px 10px;
         display: block;
+    }
+    @media (max-width:$breakpoint-tablet){
+        justify-content: center;
+        margin-left: 0;
+    }
+    @media (max-width:500px){
+        justify-content: space-around;
     }
 }
