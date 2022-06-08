@@ -3,7 +3,7 @@ import Sort from "../components/Sort";
 import Categories from "../components/Categories";
 import PizzaBlock from "../components/PizzaBlock";
 import Skeleton from "../components/PizzaBlock/Skeleton";
-const Home = () => {
+const Home = ({searchValue}) => {
   const [items, setItems] = React.useState([]);
   const [categoryItems, setCategoryItems] = React.useState(["-rating"]);
   const [isLoading, setIsLoading] = React.useState(true);
@@ -36,12 +36,13 @@ const Home = () => {
         if (!res.ok) {
           throw new Error(res.statusText);
         }
-        return res.json();
+        return (res.json());
       })
       .then((arr) => {
-        setItems(arr);
+        arr ? setItems(arr) : setItems([]);
+        console.log(arr)
         setIsLoading(false);
-      });
+      }).catch(() => {console.log("no items");setItems([])});
   }, [activeCategoryId, sortType]);
   return (
     <div className="container">
@@ -56,7 +57,10 @@ const Home = () => {
       <div className="content__items">
         {isLoading
           ? [...new Array(6)].map((_, i) => <Skeleton key={i} />)
-          : items.map((obj) => <PizzaBlock key={obj.id} {...obj} />)}
+          : items.filter(obj => {
+            return items.length == 0 ? <div> Ничего не найдено!</div> :obj.title.toLowerCase().includes(searchValue.toLowerCase())
+          }).map((obj) => <PizzaBlock key={obj.id} {...obj} />)}
+          {}
       </div>
     </div>
   );
