@@ -3,28 +3,44 @@
 .pizza-block {
   width: 220px;
   text-align: center;
-  margin: 0 auto 65px auto;
-
+  align-items: end;
+  display: grid; 
+  grid-template-columns: 1fr; 
+  margin: 0px auto 65px auto;
+  grid-template-rows: auto; 
+  gap: 0px 0px; 
+  grid-template-areas: 
+    "__image"
+    "__title"
+    "__selector"
+    "__bottom"; 
   &__image {
+    grid-area: __image;
     width: 220px;
+    align-self: start;
   }
 
   &__title {
+    grid-area: __title;
     font-size: 20px;
     font-weight: 900;
     letter-spacing: 1%;
     margin-bottom: 20px;
+    align-self: start;
   }
 
   &__selector {
+    grid-area: __selector;
     display: flex;
     background-color: #f3f3f3;
     border-radius: 10px;
     flex-direction: column;
     padding: 6px;
+    align-self: end;
 
     ul {
       display: flex;
+      justify-content: space-around;
       flex: 1;
 
       &:first-of-type {
@@ -49,11 +65,13 @@
   }
 
   &__bottom {
+    grid-area: __bottom;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
     margin-top: 20px;
+    align-self:flex-end;
   }
 
   &__price {

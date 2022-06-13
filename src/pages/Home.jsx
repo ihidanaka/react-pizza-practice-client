@@ -1,66 +1,100 @@
 import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import qs from "qs";
+import { setCategoriesTitles, setCategoryItems, setFilters } from "../redux/slices/filterSlice";
+import { setItems, setSizes, setTypes } from "../redux/slices/itemsSlice";
+import axios from "axios";
 import Sort from "../components/Sort";
 import Categories from "../components/Categories";
 import PizzaBlock from "../components/PizzaBlock";
 import Skeleton from "../components/PizzaBlock/Skeleton";
-const Home = ({searchValue}) => {
-  const [items, setItems] = React.useState([]);
-  const [categoryItems, setCategoryItems] = React.useState(["-rating"]);
+import { SearchContext } from "../App";
+const Home = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { activeCategoryId, sortType, categoryItems, categoriesTitles } = useSelector( state => state.filter);
+  const { items } = useSelector( state => state.items);
+
+
+  const {searchValue} = React.useContext(SearchContext);
+  //const [items, setItems] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
-  const [activeCategoryId, setActiveCategoryId] = React.useState(0);
-  const [sortType, setSortType] = React.useState(0);
-  const categoriesTitles = [
-    'Все',
-    'Мясные',
-    'Вегетарианская',
-    'Гриль',
-    'Острые',
-    'Закрытые'
-  ];
-  React.useEffect(() => {
+  const isMounted = React.useRef(false);
+  const isSearchHaveParams = React.useRef(false);  
+
+
+
+  const fetchItems = () => {
+
     setIsLoading(true);
-    fetch("http://5.187.0.127:4000/api/settings")
+
+    axios.get(`http://5.187.0.127:4000/api/items&category=${activeCategoryId}&sort=${categoryItems[sortType]}`)
+    .then(res => {
+      (res.data) ? dispatch(setItems(res.data)) : dispatch(setItems([]));
+      setIsLoading(false);
+    })
+    .catch((err) => {
+      setIsLoading(false);
+      dispatch(setItems([])); 
+
+      if (err.response) {
+      console.log(err.response.data);
+      console.log(err.response.status);
+      console.log(err.response.headers);
+    }});
+  }
+
+  React.useEffect(()=>{
+    if(window.location.search){
+      const params = qs.parse(window.location.search.substring(1));
+      dispatch(setFilters(params));
+      //isSearchHaveParams.current = true;
+    }
+  },[]);
+
+  React.useEffect(() => {
+    axios.get("http://5.187.0.127:4000/api/settings")
       .then((res) => {
-        if (!res.ok) {
-          throw new Error(res.statusText);
-        }
-        return res.json();
+        dispatch(setCategoryItems(res.data.categories));
+        dispatch(setCategoriesTitles(res.data.categoriesTitles));
+        dispatch(setTypes(res.data.types));
+        dispatch(setSizes(res.data.sizes));
       })
-      .then((data) => {
-        return setCategoryItems(data.categories);
-      });
-    fetch(
-      `http://5.187.0.127:4000/api/items&category=${activeCategoryId}&sort=${categoryItems[sortType]}`
-    )
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(res.statusText);
-        }
-        return (res.json());
-      })
-      .then((arr) => {
-        arr ? setItems(arr) : setItems([]);
-        console.log(arr)
-        setIsLoading(false);
-      }).catch(() => {console.log("no items");setItems([])});
-  }, [activeCategoryId, sortType]);
+      .catch((err) => {
+        if (err.response) {
+        console.log(err.response.data);
+        console.log(err.response.status);
+        console.log(err.response.headers);
+      }});
+
+      !isSearchHaveParams.current ? fetchItems() : isSearchHaveParams.current = false;
+  }, [activeCategoryId, sortType, searchValue]);
+
+  React.useEffect(()=>{
+    isMounted.current ? navigate(`?category=${activeCategoryId}&sort=${categoryItems[sortType]}`) : isMounted.current = true
+    
+  },[activeCategoryId, sortType, searchValue]);
+  
   return (
     <div className="container">
       <div className="content__top">
-        <Categories
-          value={{id:activeCategoryId, categoriesTitle:categoriesTitles}}
-          onClickCategory={(i) => setActiveCategoryId(i)}
-        />
+        {//Check and clear value and onClick in Categories
+        }
+        <Categories />
       </div>
-      <Sort value={sortType} onSetSortType={(i) => setSortType(i)} />
+      <Sort />
       <h2 className="content__title">{categoriesTitles[activeCategoryId]}</h2>
       <div className="content__items">
-        {isLoading
+        {
+          (!items.length && !isLoading) ? <div className="not-found">Ничего не найдено... 😕</div> : isLoading
           ? [...new Array(6)].map((_, i) => <Skeleton key={i} />)
           : items.filter(obj => {
-            return items.length == 0 ? <div> Ничего не найдено!</div> :obj.title.toLowerCase().includes(searchValue.toLowerCase())
-          }).map((obj) => <PizzaBlock key={obj.id} {...obj} />)}
-          {}
+            return obj.title.toLowerCase().includes(searchValue.toLowerCase())
+          }).map((obj) => <PizzaBlock key={obj.id} {...obj} />)
+        }
+
+          
       </div>
     </div>
   );

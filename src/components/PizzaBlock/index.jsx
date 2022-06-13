@@ -1,11 +1,16 @@
 import React from 'react';
-function PizzaBlock({ title, price , imageUrl, sizes, types }) {
+import { useSelector, useDispatch } from 'react-redux';
+import { addItemCart } from '../../redux/slices/cartSlice';
+
+function PizzaBlock({id, title, price , imageUrl, sizes, types, amountInCart }) {
   
   const [activeType,setActiveType] = React.useState(types[0]);
   const [activeSize,setActiveSize] = React.useState(0);
-  
-  const typeNames = ['тонкое','традиционное'];
+  const { sizesPattern, typesPattern } = useSelector( state => state.items);
+  const dispatch = useDispatch();
+
   return (
+    
     <div className="pizza-block">
       <img
         className="pizza-block__image"
@@ -16,28 +21,35 @@ function PizzaBlock({ title, price , imageUrl, sizes, types }) {
       <div className="pizza-block__selector">
         <ul>
         {
-            types.map((type,i)=> 
-            <li 
-            key={i} 
+            types.map((type,index)=> 
+              
+            <li
+            key={index} 
             onClick={() => setActiveType(type)} 
-            className = {activeType === type ? 'active' : ''}>{typeNames[type]}
-            
+            className = {activeType === type ? 'active' : ''}>{typesPattern[type].name}
             </li>)
+            
           }
         </ul>
         <ul>
           {
-            sizes.map((size,i)=> 
+            sizes.map((size,i)=>
+            
             <li
             key={i} 
             onClick={() => setActiveSize(i)} 
-            className = {activeSize === i ? 'active' : ''}> {size} см.</li>)
+            className = {activeSize === i ? 'active' : ''}> {sizesPattern[size].size} см.</li>
+            )
+            
           }
         </ul>
       </div>
       <div className="pizza-block__bottom">
-        <div className="pizza-block__price">от {price} ₽</div>
-        <button className="button button--outline button--add">
+        <div className="pizza-block__price">{price+=typesPattern[activeType].price + sizesPattern[activeSize].price} ₽</div>
+        <button onClick={() => dispatch(addItemCart({
+          id, title, price , imageUrl, sizes, types, activeParams : [typesPattern[activeType],sizesPattern[activeSize]], amountInCart,
+
+        }))} className="button button--outline button--add">
           <svg
             width="12"
             height="12"
@@ -50,7 +62,7 @@ function PizzaBlock({ title, price , imageUrl, sizes, types }) {
             />
           </svg>
           <span>Добавить</span>
-          <i>0</i>
+          <i>{amountInCart}</i>
         </button>
       </div>
     </div>
