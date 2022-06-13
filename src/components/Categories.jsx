@@ -13,7 +13,7 @@ function Categories(){
                   {categoriesTitles.map((categoryName,index) => (
                     <li
                     key={index} 
-                    onClick={() => dispatch(setActiveCategoryId(index))} 
+                    onClick={() => {dispatch(setActiveCategoryId(index)); }} 
                     className ={activeCategoryId === index ? 'active' : ''}>{categoryName}</li>
                   ))}
                   

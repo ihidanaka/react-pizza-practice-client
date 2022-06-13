@@ -22,7 +22,7 @@ const Home = () => {
   const [isLoading, setIsLoading] = React.useState(true);
   const isMounted = React.useRef(false);
   const isSearchHaveParams = React.useRef(false);  
-
+  const contentTitle = React.useRef();
 
 
   const fetchItems = () => {
@@ -45,12 +45,16 @@ const Home = () => {
     }});
   }
 
+  React.useEffect(()=> {
+    window.scrollTo(0, contentTitle.current.offsetTop);//getBoundingClientRect().top
+  },[activeCategoryId]);
   React.useEffect(()=>{
     if(window.location.search){
       const params = qs.parse(window.location.search.substring(1));
       dispatch(setFilters(params));
       //isSearchHaveParams.current = true;
     }
+    window.scrollTo(0,0);
   },[]);
 
   React.useEffect(() => {
@@ -81,11 +85,11 @@ const Home = () => {
       <div className="content__top">
         {//Check and clear value and onClick in Categories
         }
-        <Categories />
+        <Categories  />
       </div>
-      <Sort />
-      <h2 className="content__title">{categoriesTitles[activeCategoryId]}</h2>
-      <div className="content__items">
+      <Sort  />
+      <h2 ref={contentTitle} className="content__title">{categoriesTitles[activeCategoryId]}</h2>
+      <div  className="content__items">
         {
           (!items.length && !isLoading) ? <div className="not-found">Ничего не найдено... 😕</div> : isLoading
           ? [...new Array(6)].map((_, i) => <Skeleton key={i} />)
