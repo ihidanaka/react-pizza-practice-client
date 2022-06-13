@@ -6,7 +6,6 @@ import _ from "lodash";
 
 const initialState = {
     totalPrice: 0,
-    amountItems:0,
     itemsInCart: []
 };
 
@@ -15,39 +14,37 @@ const cartSlice = createSlice({
     initialState,
     reducers: {
         addItemCart(state, action) {
-            let equalItem;
-            state.itemsInCart.forEach(item => {
-
-                if ((_.isEqual(item.id, action.payload.id)) && (_.isEqual(item.activeParams, action.payload.activeParams))) {
-                    equalItem = item;
-
-                }
-
-            })
+            const equalItem = state.itemsInCart.find(obj => (_.isEqual(obj.id, action.payload.id)) && (_.isEqual(obj.activeParams, action.payload.activeParams)))
             if (equalItem) equalItem.amountInCart++;
             else {
                 action.payload.amountInCart++;
                 state.itemsInCart.push(action.payload);
-            };
-           
-        },
-        removeItem(state,action){
-            state.itemsInCart = state.itemsInCart.filter(obj => {
-                state.totalPrice = 0;
-                state.amountItems = 0;
-                
 
-                return !((_.isEqual(obj.id, action.payload.id)) && (_.isEqual(obj.activeParams, action.payload.activeParams)))})//!((_.isEqual(obj.id, action.payload.id)) && (_.isEqual(obj.activeParams, action.payload.activeParams)))
+            };
+            state.totalPrice = state.itemsInCart.reduce((sum, obj) => {
+                return obj.price * obj.amountInCart + sum;
+            }, 0)
         },
-        clearCart(state){
+        changeItemAmount(state, action) {
+            const equalItem = state.itemsInCart.find(obj => (_.isEqual(obj.id, action.payload.id)) && (_.isEqual(obj.activeParams, action.payload.activeParams)))
+            if (equalItem && equalItem.amountInCart > 1) equalItem.amountInCart--;
+            state.totalPrice = state.itemsInCart.reduce((sum, obj) => {
+                return obj.price * obj.amountInCart + sum;
+            }, 0)
+        },
+        removeItem(state, action) {
+
+            state.itemsInCart = state.itemsInCart.filter(obj => {
+                return !((_.isEqual(obj.id, action.payload.id)) && (_.isEqual(obj.activeParams, action.payload.activeParams)))
+            }) //!((_.isEqual(obj.id, action.payload.id)) && (_.isEqual(obj.activeParams, action.payload.activeParams)))
+        },
+        clearCart(state) {
             state.itemsInCart = [];
         },
-        setTotalPrice(state,action){
+
+        setTotalPrice(state, action) {
             state.totalPrice = action.payload;
         },
-        setAmountItems(state,action){
-            state.amountItems = action.payload;
-        }
 
     }
 });
@@ -55,9 +52,10 @@ const cartSlice = createSlice({
 export const {
     addItemCart,
     setTotalPrice,
-    setAmountItems,
     removeItem,
     clearCart,
+    changeItemAmount,
+
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

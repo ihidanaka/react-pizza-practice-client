@@ -1,34 +1,35 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { setAmountItems, setTotalPrice, removeItem, clearCart } from "../redux/slices/cartSlice";
+import {
+  setTotalPrice,
+  addItemCart,
+  removeItem,
+  clearCart,
+  changeItemAmount,
+} from "../redux/slices/cartSlice";
 
 const Cart = () => {
-  const { itemsInCart, totalPrice, amountItems } = useSelector(
-    (state) => state.cart
-  );
-  let price = totalPrice;
-  let amount = amountItems;
+  const { itemsInCart, totalPrice } = useSelector((state) => state.cart);
+
   const dispatch = useDispatch();
   const calcTotalPrice = () => {
-    
-    itemsInCart.map((item) =>  dispatch(setTotalPrice(price += item.amountInCart * item.price)))
+    dispatch(
+      setTotalPrice(
+        itemsInCart.reduce((sum, obj) => {
+          return obj.price * obj.amountInCart + sum;
+        }, 0)
+      )
+    );
   };
-  const calcTotalAmount = () => {
-   
-    itemsInCart.map((item) =>  dispatch(setAmountItems(amount += item.amountInCart)))
+  const getItemsInCartTotalAmount = () => {
+    return itemsInCart.reduce((sum, item) => {
+      return item.amountInCart + sum;
+    }, 0);
   };
   React.useEffect(() => {
     calcTotalPrice();
-    calcTotalAmount();
-
-    return () => {
-      //dispatch(setTotalPrice(0));
-      //dispatch(setAmountItems(0));
-
-    }
-
-  }, [itemsInCart,]);
+  }, [itemsInCart]);
   return (
     <div className="container">
       <div className="cart">
@@ -65,7 +66,7 @@ const Cart = () => {
             </svg>
             Корзина
           </h2>
-          <div className="cart__clear">
+          <div onClick={() => dispatch(clearCart())} className="cart__clear">
             <svg
               width="20"
               height="20"
@@ -103,9 +104,7 @@ const Cart = () => {
               />
             </svg>
 
-            <span onClick={() => dispatch(clearCart())}>
-              Очистить корзину
-            </span>
+            <span>Очистить корзину</span>
           </div>
         </div>
         <div className="content__items content__items--cart">
@@ -127,7 +126,10 @@ const Cart = () => {
                   </p>
                 </div>
                 <div className="cart__item-count">
-                  <button className="button button--outline button--circle cart__item-count-minus">
+                  <button
+                    onClick={() => dispatch(changeItemAmount(item))}
+                    className="button button--outline button--circle cart__item-count-minus"
+                  >
                     <svg
                       width="10"
                       height="10"
@@ -146,7 +148,12 @@ const Cart = () => {
                     </svg>
                   </button>
                   <b>{item.amountInCart}</b>
-                  <button className="button button--outline button--circle cart__item-count-plus">
+                  <button
+                    onClick={() => {
+                      dispatch(addItemCart(item));
+                    }}
+                    className="button button--outline button--circle cart__item-count-plus"
+                  >
                     <svg
                       width="10"
                       height="10"
@@ -169,7 +176,10 @@ const Cart = () => {
                   <b>{item.amountInCart * item.price} ₽</b>
                 </div>
                 <div className="cart__item-remove">
-                  <button onClick={() => dispatch(removeItem({ ...item }))} className="button button--outline button--circle">
+                  <button
+                    onClick={() => dispatch(removeItem({ ...item }))}
+                    className="button button--outline button--circle"
+                  >
                     <svg
                       width="10"
                       height="10"
@@ -196,7 +206,7 @@ const Cart = () => {
           <div className="cart__bottom-details">
             <span>
               {" "}
-              Всего товаров: <b>{amountItems} шт.</b>{" "}
+              Всего товаров: <b>{getItemsInCartTotalAmount()} шт.</b>{" "}
             </span>
             <span>
               {" "}

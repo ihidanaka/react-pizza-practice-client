@@ -1,22 +1,21 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import logo from "../assets/img/pizza-logo.svg";
-import { setAmountItems, setTotalPrice } from "../redux/slices/cartSlice";
 import Search from "./Search";
 
 function Header() {
-  const {totalPrice,amountItems,itemsInCart } = useSelector((state) => state.cart)
-  const dispatch = useDispatch();
+  const { totalPrice, itemsInCart } = useSelector((state) => state.cart);
+  const getItemsInCartTotalAmount = () => {
+    return itemsInCart.reduce((sum, item) => {
+      return item.amountInCart + sum;
+    }, 0);
+  };
 
-  // React.useEffect(() => {
-  //   dispatch(setTotalPrice(totalPrice));
-  //   dispatch(setAmountItems(amountItems))
-  // }, [itemsInCart])
   return (
     <div className="header">
       <div className="container">
-        <Link to="/" onClick={()=>{}}>
+        <Link to="/">
           <div className="header__logo">
             <img width="38" src={logo} alt="Pizza logo" />
 
@@ -26,13 +25,9 @@ function Header() {
             </div>
           </div>
         </Link>
-        <Search className="header__search"/>
+        <Search className="header__search" />
         <div className="header__cart">
-          <Link onClick={()=>{
-            dispatch(setAmountItems(0));
-            dispatch(setTotalPrice(0));
-
-          }} to="/cart" className="button button--cart">
+          <Link to="/cart" className="button button--cart">
             <span>{totalPrice}₽</span>
             <div className="button__delimiter"></div>
 
@@ -65,7 +60,7 @@ function Header() {
                 strokeLinejoin="round"
               />
             </svg>
-            <span>{amountItems}</span>
+            <span>{getItemsInCartTotalAmount()}</span>
           </Link>
         </div>
 
