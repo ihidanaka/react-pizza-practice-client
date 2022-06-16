@@ -8,8 +8,8 @@ function LoginBlock() {
   return (
     <div>
       <div className={styles.root}>
-      <div className={styles.title}>Name:</div>
-        <Input placeholder="Name" required={true} type={"text"}></Input>
+      {/* {<div className={styles.title}>Name:</div>
+        <Input placeholder="Name" required={true} type={"text"}></Input>} */}
         <div className={styles.title}>Email:</div>
         <Input placeholder="Email" required={true} type={"text"}></Input>
         <div className={styles.title}>Password:</div>
