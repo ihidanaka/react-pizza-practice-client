@@ -32,7 +32,7 @@ const Home = () => {
 
     axios
       .get(
-        `http://5.187.0.127:4000/api/items&category=${activeCategoryId}&sort=${categoryItems[sortType]}`
+        `http://127.0.0.1:4000/api/items&category=${activeCategoryId}&sort=${categoryItems[sortType]}`
       )
       .then((res) => {
         res.data ? dispatch(setItems(res.data)) : dispatch(setItems([]));
@@ -63,7 +63,7 @@ const Home = () => {
 
   React.useEffect(() => {
     axios
-      .get("http://5.187.0.127:4000/api/settings")
+      .get("http://127.0.0.1:4000/api/settings")
       .then((res) => {
         dispatch(setCategoryItems(res.data.categories));
         dispatch(setCategoriesTitles(res.data.categoriesTitles));
