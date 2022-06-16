@@ -1,0 +1,29 @@
+.root {
+    max-width: 280px;
+    //display: grid;
+    position: relative;
+    //margin: 0 auto;
+    
+}
+.input{
+    border: 1px solid rgba(0,0,0,0.1);
+    padding: 12px 20px;
+    width: 100%;
+    //max-width: 600px;
+    border-radius:10px ;
+    font-size: 16px;
+    margin-right: 10px;
+}
+.clear{
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    opacity: 0.3;
+    cursor: pointer;
+    &:hover{
+        opacity: 0.8;
+        transition: all ease-in-out 0.2s;
+    }
+}

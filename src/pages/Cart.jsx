@@ -108,7 +108,7 @@ const Cart = () => {
           </div>
         </div>
         <div className="content__items content__items--cart">
-          {itemsInCart.map((item, index) => {
+          {!itemsInCart.length ? <>No items in cart</> : itemsInCart.map((item, index) => {
             return (
               <div key={index} className="cart__item">
                 <div className="cart__item-img">
